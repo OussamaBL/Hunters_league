@@ -5,5 +5,7 @@ import com.oussama.hunters_league.domain.User;
 import java.util.Optional;
 
 public interface UserService {
-    Optional<User> findByUsernameOrEmail(String username, String email);
+    Optional<User> findByUsernameOrEmailOrCin(String username, String email, String cin);
+
+    User addUser(User user);
 }
