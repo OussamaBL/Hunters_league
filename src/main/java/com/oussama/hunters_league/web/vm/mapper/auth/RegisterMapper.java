@@ -1,11 +1,9 @@
-package com.oussama.hunters_league.web.vm.mapper;
+package com.oussama.hunters_league.web.vm.mapper.auth;
 
 import com.oussama.hunters_league.domain.User;
-import com.oussama.hunters_league.web.vm.RegisterVM;
+import com.oussama.hunters_league.web.vm.auth.RegisterVM;
 import com.oussama.hunters_league.web.vm.ResponseUserVM;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface RegisterMapper {

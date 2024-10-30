@@ -2,6 +2,7 @@ package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.exception.UserAlreadyExistException;
+import com.oussama.hunters_league.exception.UserNotFoundException;
 import com.oussama.hunters_league.repository.UserRepository;
 import com.oussama.hunters_league.service.UserService;
 import com.oussama.hunters_league.utils.PasswordEncoderUtil;
@@ -29,5 +30,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> us=this.findByUsernameOrEmailOrCin(user.getUsername(),user.getEmail(),user.getCin());
         us.ifPresent(u -> { throw new UserAlreadyExistException("Username or Email or cin already exist"); });
         return userRepository.save(user);
+    }
+
+    @Override
+    public User login(String email, String password) {
+        Optional<User> us=userRepository.findByEmail(email);
+        us.orElseThrow(() -> new UserNotFoundException("Email not found"));
+        if(!passwordEncoderUtil.matches(password,us.get().getPassword()))
+            throw new UserNotFoundException("Password incorrect");
+        return us.get();
     }
 }

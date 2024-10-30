@@ -1,4 +1,4 @@
-package com.oussama.hunters_league.web.vm;
+package com.oussama.hunters_league.web.vm.auth;
 
 import com.oussama.hunters_league.domain.Enum.Role;
 import jakarta.validation.constraints.*;

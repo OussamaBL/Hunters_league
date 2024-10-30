@@ -8,4 +8,5 @@ public interface UserService {
     Optional<User> findByUsernameOrEmailOrCin(String username, String email, String cin);
 
     User addUser(User user);
+    User login(String username,String password);
 }
