@@ -16,6 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfileVM {
 
+    @Nullable
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters long")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username must be alphanumeric")
     private String username;

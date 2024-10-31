@@ -21,14 +21,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
-public class AuthController {
+public class UserController {
 
     private final UserServiceImpl userServiceImpl;
     private final RegisterMapper registerMapper;
     private final LoginMapper loginMapper;
     private final ProfileMapper profileMapper;
 
-    public AuthController(UserServiceImpl userServiceImpl, RegisterMapper registerMapper, LoginMapper loginMapper,ProfileMapper profileMapper){
+    public UserController(UserServiceImpl userServiceImpl, RegisterMapper registerMapper, LoginMapper loginMapper, ProfileMapper profileMapper){
         this.userServiceImpl=userServiceImpl;
         this.registerMapper=registerMapper;
         this.loginMapper=loginMapper;
@@ -75,6 +75,15 @@ public class AuthController {
         response.put("message", "User updated successfully");
         response.put("data", responseUserVM);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Transactional
+    @DeleteMapping("/Delete/{id}")
+    public ResponseEntity<Map<String,Object>> Delete(@PathVariable UUID id){
+        userServiceImpl.deleteUser(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "User deleted successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

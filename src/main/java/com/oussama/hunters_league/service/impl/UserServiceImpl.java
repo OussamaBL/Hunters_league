@@ -1,6 +1,7 @@
 package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.User;
+import com.oussama.hunters_league.exception.NullVarException;
 import com.oussama.hunters_league.exception.UserAlreadyExistException;
 import com.oussama.hunters_league.exception.UserNotFoundException;
 import com.oussama.hunters_league.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateProfile(User user) {
+        if(user.getId()==null) throw new NullVarException("id is null");
         Optional<User> us=userRepository.findById(user.getId());
         us.orElseThrow(() -> new UserAlreadyExistException("User id not exist"));
         User existingUser=us.get();
@@ -73,5 +76,13 @@ public class UserServiceImpl implements UserService {
         if (user.getNationality() != null) existingUser.setNationality(user.getNationality());
 
         return userRepository.save(existingUser);
+    }
+
+    @Override
+    public void deleteUser(UUID id) {
+        if(id==null) throw new NullVarException("id is null");
+        Optional<User> user=userRepository.findById(id);
+        user.orElseThrow( ()-> new UserNotFoundException("User not exists with this id"));
+        userRepository.delete(user.get());
     }
 }
