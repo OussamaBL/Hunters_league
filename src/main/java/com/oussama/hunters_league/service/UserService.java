@@ -9,4 +9,6 @@ public interface UserService {
 
     User addUser(User user);
     User login(String username,String password);
+
+    User updateProfile(User user);
 }

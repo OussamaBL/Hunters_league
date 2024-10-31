@@ -40,4 +40,38 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Password incorrect");
         return us.get();
     }
+
+    @Override
+    public User updateProfile(User user) {
+        Optional<User> us=userRepository.findById(user.getId());
+        us.orElseThrow(() -> new UserAlreadyExistException("User id not exist"));
+        User existingUser=us.get();
+
+        if (user.getUsername() != null && !user.getUsername().equals(existingUser.getUsername())) {
+            userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
+                throw new UserAlreadyExistException("Username already exists");
+            });
+            existingUser.setUsername(user.getUsername());
+        }
+
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
+            userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
+                throw new UserAlreadyExistException("Email already exists");
+            });
+            existingUser.setEmail(user.getEmail());
+        }
+
+        if (user.getCin() != null && !user.getCin().equals(existingUser.getCin())) {
+            userRepository.findByCin(user.getCin()).ifPresent(u -> {
+                throw new UserAlreadyExistException("Cin already exists");
+            });
+            existingUser.setCin(user.getCin());
+        }
+        if (user.getPassword() != null) existingUser.setPassword(passwordEncoderUtil.encodePassword(user.getPassword()) );
+        if (user.getFirstName() != null) existingUser.setFirstName(user.getFirstName());
+        if (user.getLastName() != null) existingUser.setLastName(user.getLastName());
+        if (user.getNationality() != null) existingUser.setNationality(user.getNationality());
+
+        return userRepository.save(existingUser);
+    }
 }
