@@ -10,6 +10,7 @@ import com.oussama.hunters_league.utils.PasswordEncoderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,5 +85,13 @@ public class UserServiceImpl implements UserService {
         Optional<User> user=userRepository.findById(id);
         user.orElseThrow( ()-> new UserNotFoundException("User not exists with this id"));
         userRepository.delete(user.get());
+    }
+
+    @Override
+    public List<User> searchUser(String search) {
+        if(search==null) throw new NullVarException("search is null");
+        List<User> listUser= userRepository.findByFirstNameOrLastNameOrEmail(search,search,search);
+        if(listUser.isEmpty()) throw new UserNotFoundException("Users not found");
+        return listUser;
     }
 }

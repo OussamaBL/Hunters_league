@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/users")
@@ -35,10 +33,6 @@ public class UserController {
         this.profileMapper=profileMapper;
     }
 
-/*    @PostMapping("/search")
-    public ResponseEntity<List<UserDTO>> searchUsers(@RequestBody @Valid UserVM userVM){
-
-    }*/
     @Transactional
     @PostMapping("/Register")
     public ResponseEntity<Map<String,Object>> Register(@RequestBody @Valid RegisterVM userVM){
@@ -83,6 +77,16 @@ public class UserController {
         userServiceImpl.deleteUser(id);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User deleted successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/Search")
+    public ResponseEntity<Map<String,Object>> Search(@RequestParam String param){
+        List<User> listUser= userServiceImpl.searchUser(param);
+        List<ResponseUserVM> listUserVM=new ArrayList<>();
+        listUser.forEach(user->{ listUserVM.add(registerMapper.toResponseUserVM(user)); });
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", listUserVM);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
