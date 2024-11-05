@@ -1,7 +1,10 @@
 package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.Species;
+import com.oussama.hunters_league.domain.User;
+import com.oussama.hunters_league.exception.NullVarException;
 import com.oussama.hunters_league.exception.Species.SpeciesAlreadyExistException;
+import com.oussama.hunters_league.exception.User.UserAlreadyExistException;
 import com.oussama.hunters_league.repository.SpeciesRepository;
 import com.oussama.hunters_league.service.SpeciesService;
 import org.springframework.stereotype.Service;
@@ -11,21 +14,39 @@ import java.util.UUID;
 
 @Service
 public class SpeciesServiceImpl implements SpeciesService {
-    private final SpeciesRepository speciesInterface;
-    public SpeciesServiceImpl(SpeciesRepository speciesInterface){
-        this.speciesInterface=speciesInterface;
+    private final SpeciesRepository speciesRepository;
+    public SpeciesServiceImpl(SpeciesRepository speciesRepository){
+        this.speciesRepository=speciesRepository;
     }
     @Override
     public Species addSpecies(Species species) {
-        Optional<Species> spec=speciesInterface.findByName(species.getName());
+        Optional<Species> spec=speciesRepository.findByName(species.getName());
         spec.ifPresent(s -> {throw new SpeciesAlreadyExistException("Name already exist");});
-        return speciesInterface.save(species);
+        return speciesRepository.save(species);
 
     }
 
     @Override
     public Species updateSpecies(Species species) {
-        return null;
+        if(species.getId()==null) throw new NullVarException("id is null");
+        Optional<Species> spec=speciesRepository.findById(species.getId());
+        spec.orElseThrow(() -> new SpeciesAlreadyExistException("Species id not exist"));
+        Species existingSpecies=spec.get();
+
+        if (species.getName() != null && !species.getName().equals(existingSpecies.getName())) {
+            speciesRepository.findByName(species.getName()).ifPresent(u -> {
+                throw new SpeciesAlreadyExistException("Name already exists");
+            });
+            existingSpecies.setName(species.getName());
+        }
+
+
+        if (species.getCategory() != null) existingSpecies.setCategory(species.getCategory());
+        if (species.getDifficulty() != null) existingSpecies.setDifficulty(species.getDifficulty());
+        if (species.getMinimumWeight() != null) existingSpecies.setMinimumWeight(species.getMinimumWeight());
+        if (species.getPoints() != null) existingSpecies.setPoints(species.getPoints());
+
+        return speciesRepository.save(existingSpecies);
     }
 
     @Override
