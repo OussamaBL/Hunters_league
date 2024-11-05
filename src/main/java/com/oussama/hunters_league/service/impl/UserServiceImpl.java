@@ -2,8 +2,8 @@ package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.exception.NullVarException;
-import com.oussama.hunters_league.exception.UserAlreadyExistException;
-import com.oussama.hunters_league.exception.UserNotFoundException;
+import com.oussama.hunters_league.exception.User.UserAlreadyExistException;
+import com.oussama.hunters_league.exception.User.UserNotFoundException;
 import com.oussama.hunters_league.repository.UserRepository;
 import com.oussama.hunters_league.service.UserService;
 import com.oussama.hunters_league.utils.PasswordEncoderUtil;

@@ -1,8 +1,7 @@
 package com.oussama.hunters_league.web.errors;
 
-import com.oussama.hunters_league.exception.UserAlreadyExistException;
-import com.oussama.hunters_league.exception.UserNotFoundException;
-import jakarta.persistence.Id;
+import com.oussama.hunters_league.exception.User.UserAlreadyExistException;
+import com.oussama.hunters_league.exception.User.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

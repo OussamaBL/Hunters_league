@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsernameOrEmailOrCin(String username, String email,String cin);
     List<User> findByFirstNameOrLastNameOrEmail(String firstName, String LastName, String email);
     Optional<User> findByEmail(String email);
