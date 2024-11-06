@@ -1,5 +1,6 @@
 package com.oussama.hunters_league.web.rest.species;
 
+import com.oussama.hunters_league.domain.Enum.SpeciesType;
 import com.oussama.hunters_league.domain.Species;
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.service.impl.SpeciesServiceImpl;
@@ -13,6 +14,7 @@ import com.oussama.hunters_league.web.vm.species.EditSpeciesVM;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/species")
@@ -60,5 +63,12 @@ public class SpeciesController {
         response.put("message", "Species updated successfully");
         response.put("data", responseUserVM);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getSpecies")
+    public ResponseEntity<Page<ResponseSpeciesVM>> getSpecies(@RequestParam SpeciesType speciesType,@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "10") int size){
+        Page<Species> speciesPage=speciesServiceimpl.getSpeciesByCategory(speciesType,page,size);
+        Page<ResponseSpeciesVM> responseSpeciesVM= speciesPage.map(species ->editSpecies.toResponseSpeciesVM(species));
+        return new ResponseEntity<>(responseSpeciesVM,HttpStatus.OK);
     }
 }

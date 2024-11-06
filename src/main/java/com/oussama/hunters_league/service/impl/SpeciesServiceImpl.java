@@ -1,5 +1,6 @@
 package com.oussama.hunters_league.service.impl;
 
+import com.oussama.hunters_league.domain.Enum.SpeciesType;
 import com.oussama.hunters_league.domain.Species;
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.exception.NullVarException;
@@ -7,7 +8,11 @@ import com.oussama.hunters_league.exception.Species.SpeciesAlreadyExistException
 import com.oussama.hunters_league.exception.User.UserAlreadyExistException;
 import com.oussama.hunters_league.repository.SpeciesRepository;
 import com.oussama.hunters_league.service.SpeciesService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Optional;
 import java.util.UUID;
@@ -52,5 +57,11 @@ public class SpeciesServiceImpl implements SpeciesService {
     @Override
     public void deletespecies(UUID id) {
 
+    }
+
+    @Override
+    public Page<Species> getSpeciesByCategory(SpeciesType speciesType, int page, int size) {
+        Pageable pageable= PageRequest.of(page,size);
+        return speciesRepository.getAllByCategory(speciesType,pageable);
     }
 }
