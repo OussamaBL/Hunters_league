@@ -13,4 +13,5 @@ public interface SpeciesService {
     Species updateSpecies(Species species);
     void deletespecies(UUID id);
     Page<Species> getSpeciesByCategory(SpeciesType speciesType, int page, int size);
+    void deleteSpecies(UUID id);
 }

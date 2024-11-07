@@ -71,4 +71,10 @@ public class SpeciesController {
         Page<ResponseSpeciesVM> responseSpeciesVM= speciesPage.map(species ->editSpecies.toResponseSpeciesVM(species));
         return new ResponseEntity<>(responseSpeciesVM,HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteSpecies(@PathVariable UUID id) {
+        speciesServiceimpl.deleteSpecies(id);
+        return ResponseEntity.ok("Specy deleted successfully");
+    }
 }

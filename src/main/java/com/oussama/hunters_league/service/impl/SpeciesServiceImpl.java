@@ -64,4 +64,8 @@ public class SpeciesServiceImpl implements SpeciesService {
         Pageable pageable= PageRequest.of(page,size);
         return speciesRepository.getAllByCategory(speciesType,pageable);
     }
+    @Override
+    public void deleteSpecies(UUID id) {
+        speciesRepository.deleteById(id);
+    }
 }
