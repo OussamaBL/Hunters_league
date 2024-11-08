@@ -1,7 +1,7 @@
 package com.oussama.hunters_league.web.vm.mapper.species;
 
 import com.oussama.hunters_league.domain.Species;
-import com.oussama.hunters_league.web.vm.ResponseSpeciesVM;
+import com.oussama.hunters_league.web.vm.species.ResponseSpeciesVM;
 import com.oussama.hunters_league.web.vm.species.AddSpeciesVM;
 import org.mapstruct.Mapper;
 

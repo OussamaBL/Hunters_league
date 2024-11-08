@@ -5,6 +5,7 @@ import com.oussama.hunters_league.exception.Competition.CompetitionAlreadyExistE
 import com.oussama.hunters_league.exception.Competition.CompetitionInvalidException;
 import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.service.CompetitionService;
+import com.oussama.hunters_league.web.vm.competition.ResponseDetailsCompetitionVM;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,5 +35,14 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     public void deleteCompetition(UUID id) {
 
+    }
+
+    @Override
+    public ResponseDetailsCompetitionVM getCompetitionDetails(UUID id) {
+        Optional<Competition> competition=competitionRepository.findById(id);
+        if(competition.isEmpty()) throw new CompetitionAlreadyExistException("competition not found");
+        Competition cmp=competition.get();
+        int cpt=cmp.getParticipations()!=null ? cmp.getParticipations().size() : 0;
+        return new ResponseDetailsCompetitionVM(cmp.getDate(),cmp.getLocation(),cpt);
     }
 }

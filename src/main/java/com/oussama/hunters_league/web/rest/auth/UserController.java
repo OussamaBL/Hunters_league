@@ -5,7 +5,7 @@ import com.oussama.hunters_league.service.impl.UserServiceImpl;
 import com.oussama.hunters_league.web.vm.auth.LoginVM;
 import com.oussama.hunters_league.web.vm.auth.ProfileVM;
 import com.oussama.hunters_league.web.vm.auth.RegisterVM;
-import com.oussama.hunters_league.web.vm.ResponseUserVM;
+import com.oussama.hunters_league.web.vm.auth.ResponseUserVM;
 import com.oussama.hunters_league.web.vm.mapper.auth.LoginMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.ProfileMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.RegisterMapper;

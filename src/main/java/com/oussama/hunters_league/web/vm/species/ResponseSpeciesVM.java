@@ -1,4 +1,4 @@
-package com.oussama.hunters_league.web.vm;
+package com.oussama.hunters_league.web.vm.species;
 
 import com.oussama.hunters_league.domain.Enum.Difficulty;
 import com.oussama.hunters_league.domain.Enum.SpeciesType;

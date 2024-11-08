@@ -1,7 +1,7 @@
 package com.oussama.hunters_league.web.vm.mapper.competition;
 
 import com.oussama.hunters_league.domain.Competition;
-import com.oussama.hunters_league.web.vm.ResponseCompetitionVM;
+import com.oussama.hunters_league.web.vm.competition.ResponseCompetitionVM;
 import com.oussama.hunters_league.web.vm.competition.AddCompetitionVM;
 import org.mapstruct.Mapper;
 
