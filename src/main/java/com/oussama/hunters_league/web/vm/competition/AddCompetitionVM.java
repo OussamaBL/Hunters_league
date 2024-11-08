@@ -3,10 +3,7 @@ package com.oussama.hunters_league.web.vm.competition;
 import com.oussama.hunters_league.domain.Enum.SpeciesType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,9 @@ import java.time.LocalDateTime;
 public class AddCompetitionVM {
 
     @NotBlank(message = "Code is required.")
+    @Pattern(regexp = "^[A-Za-z]+_\\d{4}$", message = "Le code de la compétition doit respecter le pattern: lieux_date (ex: Paris_2024)")
     private String code;
+
     @NotNull(message = "Location is required.")
     private String location;
 

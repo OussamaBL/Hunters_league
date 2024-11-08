@@ -2,7 +2,7 @@ package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.Competition;
 import com.oussama.hunters_league.exception.Competition.CompetitionAlreadyExistException;
-import com.oussama.hunters_league.exception.Competition.CompetitionDateInvalidException;
+import com.oussama.hunters_league.exception.Competition.CompetitionInvalidException;
 import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.service.CompetitionService;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,8 @@ public class CompetitionServiceImpl implements CompetitionService {
     public Competition addCompetition(Competition competition) {
         Optional<Competition> comp=competitionRepository.findByCode(competition.getCode());
         if(comp.isPresent()) throw new CompetitionAlreadyExistException("Code already exists");
-        if(competition.getDate().isBefore(LocalDateTime.now())) throw new CompetitionDateInvalidException("Date should be after localdate");
+        if(competition.getDate().isBefore(LocalDateTime.now())) throw new CompetitionInvalidException("Date should be after localdate");
+        if(competition.getMinParticipants()>=competition.getMaxParticipants()) throw new CompetitionInvalidException("max participant should be greater then min participant");
         return competitionRepository.save(competition);
     }
 
