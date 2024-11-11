@@ -2,10 +2,7 @@ package com.oussama.hunters_league.web.rest.auth;
 
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.service.impl.UserServiceImpl;
-import com.oussama.hunters_league.web.vm.auth.LoginVM;
-import com.oussama.hunters_league.web.vm.auth.ProfileVM;
-import com.oussama.hunters_league.web.vm.auth.RegisterVM;
-import com.oussama.hunters_league.web.vm.auth.ResponseUserVM;
+import com.oussama.hunters_league.web.vm.user.*;
 import com.oussama.hunters_league.web.vm.mapper.auth.LoginMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.ProfileMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.RegisterMapper;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -88,6 +86,12 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         response.put("data", listUserVM);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/findByCriteria")
+    public ResponseEntity<List<ResponseUserVM>> findByCriteria(@RequestBody @Valid SearchDTO searchDTO){
+        List<User> listUser=userServiceImpl.findByCriteria(searchDTO);
+        List<ResponseUserVM> responseUserVMList=listUser.stream().map((user)->registerMapper.toResponseUserVM(user)).collect(Collectors.toList());
+        return new ResponseEntity<>(responseUserVMList,HttpStatus.OK);
     }
 
 }

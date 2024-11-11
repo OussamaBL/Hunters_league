@@ -1,6 +1,7 @@
 package com.oussama.hunters_league.service;
 
 import com.oussama.hunters_league.domain.User;
+import com.oussama.hunters_league.web.vm.user.SearchDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,7 @@ public interface UserService {
 
     User updateProfile(User user);
     void deleteUser(UUID id);
+
+    List<User> findByCriteria(SearchDTO searchDTO);
 
 }

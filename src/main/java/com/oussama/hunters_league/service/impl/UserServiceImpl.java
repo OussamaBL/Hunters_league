@@ -5,8 +5,10 @@ import com.oussama.hunters_league.exception.NullVarException;
 import com.oussama.hunters_league.exception.User.UserAlreadyExistException;
 import com.oussama.hunters_league.exception.User.UserNotFoundException;
 import com.oussama.hunters_league.repository.UserRepository;
+import com.oussama.hunters_league.repository.impl.UserRepositoryImpl;
 import com.oussama.hunters_league.service.UserService;
 import com.oussama.hunters_league.utils.PasswordEncoderUtil;
+import com.oussama.hunters_league.web.vm.user.SearchDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserRepositoryImpl userRepositoryImpl;
     @Autowired
     private PasswordEncoderUtil passwordEncoderUtil;
 
@@ -93,5 +97,10 @@ public class UserServiceImpl implements UserService {
         List<User> listUser= userRepository.findByFirstNameOrLastNameOrEmail(search,search,search);
         if(listUser.isEmpty()) throw new UserNotFoundException("Users not found");
         return listUser;
+    }
+
+    @Override
+    public List<User> findByCriteria(SearchDTO searchDTO) {
+        return userRepositoryImpl.findByCriteria(searchDTO);
     }
 }
