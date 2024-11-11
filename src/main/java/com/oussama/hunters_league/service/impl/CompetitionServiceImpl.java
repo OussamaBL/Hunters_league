@@ -2,9 +2,11 @@ package com.oussama.hunters_league.service.impl;
 
 import com.oussama.hunters_league.domain.Competition;
 import com.oussama.hunters_league.exception.Competition.CompetitionAlreadyExistException;
+import com.oussama.hunters_league.exception.Competition.CompetitionDateException;
 import com.oussama.hunters_league.exception.Competition.CompetitionInvalidException;
 import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.service.CompetitionService;
+import com.oussama.hunters_league.utils.DatesUtil;
 import com.oussama.hunters_league.web.vm.competition.ResponseDetailsCompetitionVM;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,11 @@ import java.util.UUID;
 @Service
 public class CompetitionServiceImpl implements CompetitionService {
     private final CompetitionRepository competitionRepository;
-    public CompetitionServiceImpl(CompetitionRepository competitionRepository){
+
+    private final DatesUtil datesUtil;
+    public CompetitionServiceImpl(CompetitionRepository competitionRepository,DatesUtil datesUtil){
         this.competitionRepository=competitionRepository;
+        this.datesUtil=datesUtil;
     }
 
     @Override
@@ -24,6 +29,9 @@ public class CompetitionServiceImpl implements CompetitionService {
         if(comp.isPresent()) throw new CompetitionAlreadyExistException("Code already exists");
         if(competition.getDate().isBefore(LocalDateTime.now())) throw new CompetitionInvalidException("Date should be after localdate");
         if(competition.getMinParticipants()>=competition.getMaxParticipants()) throw new CompetitionInvalidException("max participant should be greater then min participant");
+        LocalDateTime date1=DatesUtil.getStartOfWeek(competition.getDate());
+        LocalDateTime date2=DatesUtil.getEndOfWeek(competition.getDate());
+        if(competitionRepository.existsByDateBetween(date1,date2)) throw new CompetitionDateException("Already create competition in this week");
         return competitionRepository.save(competition);
     }
 
