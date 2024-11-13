@@ -8,9 +8,12 @@ import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.service.CompetitionService;
 import com.oussama.hunters_league.utils.DatesUtil;
 import com.oussama.hunters_league.web.vm.competition.ResponseDetailsCompetitionVM;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Service
@@ -52,5 +55,14 @@ public class CompetitionServiceImpl implements CompetitionService {
         Competition cmp=competition.get();
         int cpt=cmp.getParticipations()!=null ? cmp.getParticipations().size() : 0;
         return new ResponseDetailsCompetitionVM(cmp.getDate(),cmp.getLocation(),cpt);
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    @Override
+    public void closeParticipation() {
+        LocalDateTime date=LocalDateTime.now().plusHours(24);
+        List<Competition> competitionList=competitionRepository.findAllByOpenRegistrationTrueAndDateBefore(date);
+        competitionList.forEach((competition -> { competition.setOpenRegistration(false); }));
+        competitionRepository.saveAll(competitionList);
     }
 }

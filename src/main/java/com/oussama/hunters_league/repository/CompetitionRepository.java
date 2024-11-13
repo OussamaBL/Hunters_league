@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,6 @@ import java.util.UUID;
 public interface CompetitionRepository extends JpaRepository<Competition, UUID> {
     Optional<Competition> findByCode(String code);
     Boolean existsByDateBetween(LocalDateTime date1, LocalDateTime date2);
+
+    List<Competition> findAllByOpenRegistrationTrueAndDateBefore(LocalDateTime date);
 }
