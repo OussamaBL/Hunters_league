@@ -1,4 +1,4 @@
-package com.oussama.hunters_league.web.vm.competition;
+package com.oussama.hunters_league.web.vm.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

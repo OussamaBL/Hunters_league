@@ -15,4 +15,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
     Boolean existsByUserAndCompetition(User user, Competition competition);
 
     List<Participation> findAllByUser_Id(UUID user_id);
+    List<Participation> findTop3ByCompetition_IdOrderByScoreDesc(UUID competition_id);
 }

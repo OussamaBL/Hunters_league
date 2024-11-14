@@ -16,7 +16,8 @@ import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.repository.ParticipationRepository;
 import com.oussama.hunters_league.repository.UserRepository;
 import com.oussama.hunters_league.service.ParticipationService;
-import com.oussama.hunters_league.web.vm.competition.ParticipationResulVM;
+import com.oussama.hunters_league.web.vm.result.ParticipationResulVM;
+import com.oussama.hunters_league.web.vm.result.PodiumDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -77,5 +78,19 @@ public class ParticipationServiceImpl implements ParticipationService {
                     )
                 ).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<PodiumDTO> getCompetitionPodium(UUID competition_id) {
+        if(!competitionRepository.existsById(competition_id)) throw new CompetitionNotFoundException("competition not exist");
+        List<Participation> participationList= participationRepository.findTop3ByCompetition_IdOrderByScoreDesc(competition_id);
+         return participationList.stream().map(participation ->
+            new PodiumDTO(
+                    participation.getId(),
+                    participation.getUser().getUsername(),
+                    participation.getScore()
+
+            )
+        ).collect(Collectors.toList());
     }
 }
