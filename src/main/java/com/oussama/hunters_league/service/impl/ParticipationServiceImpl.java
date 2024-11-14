@@ -16,11 +16,14 @@ import com.oussama.hunters_league.repository.CompetitionRepository;
 import com.oussama.hunters_league.repository.ParticipationRepository;
 import com.oussama.hunters_league.repository.UserRepository;
 import com.oussama.hunters_league.service.ParticipationService;
+import com.oussama.hunters_league.web.vm.competition.ParticipationResulVM;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ParticipationServiceImpl implements ParticipationService {
@@ -57,5 +60,22 @@ public class ParticipationServiceImpl implements ParticipationService {
         participation.setUser(us);
         participation.setCompetition(comp);
         return participationRepository.save(participation);
+    }
+
+    @Override
+    public List<ParticipationResulVM> getUserCompetitionResults(UUID id) {
+        if(!userRepository.existsById(id)) throw new UserNotFoundException("user not exist");
+        List<Participation> participationList=participationRepository.findAllByUser_Id(id);
+        return participationList.stream()
+                .map(participation ->
+                    new ParticipationResulVM(
+                            participation.getCompetition().getId(),
+                            participation.getCompetition().getCode(),
+                            participation.getCompetition().getLocation(),
+                            participation.getCompetition().getDate(),
+                            participation.getScore()
+                    )
+                ).collect(Collectors.toList());
+
     }
 }
