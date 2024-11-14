@@ -11,4 +11,6 @@ public interface CompetitionService {
     void deleteCompetition(UUID id);
 
     ResponseDetailsCompetitionVM getCompetitionDetails(UUID id);
+
+    void closeParticipation();
 }

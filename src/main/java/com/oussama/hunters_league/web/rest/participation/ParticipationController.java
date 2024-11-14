@@ -2,13 +2,16 @@ package com.oussama.hunters_league.web.rest.participation;
 
 import com.oussama.hunters_league.domain.Participation;
 import com.oussama.hunters_league.service.impl.ParticipationServiceImpl;
+import com.oussama.hunters_league.web.vm.result.HistoryResultDTO;
+import com.oussama.hunters_league.web.vm.result.ParticipationResulVM;
 import com.oussama.hunters_league.web.vm.participation.ParticipationInCompetitionVM;
+import com.oussama.hunters_league.web.vm.result.PodiumDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/participation")
@@ -26,4 +29,20 @@ public class ParticipationController {
         return ResponseEntity.ok("Participation successful");
 
     }
+
+    @GetMapping("/results/{userId}")
+    public List<ParticipationResulVM> getUserCompetitionResults(@PathVariable UUID userId) {
+        return participationServiceImpl.getUserCompetitionResults(userId);
+    }
+
+    @GetMapping("/podiumResult/{competitionId}")
+    public List<PodiumDTO> getCompetitionPodium(@PathVariable UUID competitionId) {
+        return participationServiceImpl.getCompetitionPodium(competitionId);
+    }
+
+    @GetMapping("/competitionHistory/{user_id}")
+    public List<HistoryResultDTO> getAppUserCompetitionHistory(@PathVariable UUID user_id) {
+        return participationServiceImpl.getUserCompetitionHistory(user_id);
+    }
+
 }
