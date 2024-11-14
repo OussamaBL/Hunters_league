@@ -6,6 +6,7 @@ import com.oussama.hunters_league.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,4 +17,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, UU
 
     List<Participation> findAllByUser_Id(UUID user_id);
     List<Participation> findTop3ByCompetition_IdOrderByScoreDesc(UUID competition_id);
+
+    List<Participation> findAllByUser_IdAndCompetition_DateBeforeOrderByCompetition_DateDesc(UUID userId, LocalDateTime date);
+
 }

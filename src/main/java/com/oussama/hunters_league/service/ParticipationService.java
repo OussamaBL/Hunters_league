@@ -1,6 +1,7 @@
 package com.oussama.hunters_league.service;
 
 import com.oussama.hunters_league.domain.Participation;
+import com.oussama.hunters_league.web.vm.result.HistoryResultDTO;
 import com.oussama.hunters_league.web.vm.result.ParticipationResulVM;
 import com.oussama.hunters_league.web.vm.result.PodiumDTO;
 
@@ -11,4 +12,6 @@ public interface ParticipationService {
     Participation participationInCompetition(UUID id_user,UUID id_competition);
     List<ParticipationResulVM> getUserCompetitionResults(UUID id);
     List<PodiumDTO> getCompetitionPodium(UUID competition_id);
+
+    List<HistoryResultDTO> getUserCompetitionHistory(UUID user_id);
 }

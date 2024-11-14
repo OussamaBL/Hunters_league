@@ -2,6 +2,7 @@ package com.oussama.hunters_league.web.rest.participation;
 
 import com.oussama.hunters_league.domain.Participation;
 import com.oussama.hunters_league.service.impl.ParticipationServiceImpl;
+import com.oussama.hunters_league.web.vm.result.HistoryResultDTO;
 import com.oussama.hunters_league.web.vm.result.ParticipationResulVM;
 import com.oussama.hunters_league.web.vm.participation.ParticipationInCompetitionVM;
 import com.oussama.hunters_league.web.vm.result.PodiumDTO;
@@ -38,4 +39,10 @@ public class ParticipationController {
     public List<PodiumDTO> getCompetitionPodium(@PathVariable UUID competitionId) {
         return participationServiceImpl.getCompetitionPodium(competitionId);
     }
+
+    @GetMapping("/competitionHistory/{user_id}")
+    public List<HistoryResultDTO> getAppUserCompetitionHistory(@PathVariable UUID user_id) {
+        return participationServiceImpl.getUserCompetitionHistory(user_id);
+    }
+
 }
