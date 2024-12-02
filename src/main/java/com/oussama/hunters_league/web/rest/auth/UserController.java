@@ -2,6 +2,7 @@ package com.oussama.hunters_league.web.rest.auth;
 
 import com.oussama.hunters_league.domain.User;
 import com.oussama.hunters_league.service.impl.UserServiceImpl;
+import com.oussama.hunters_league.utils.JwtUtil;
 import com.oussama.hunters_league.web.vm.user.*;
 import com.oussama.hunters_league.web.vm.mapper.auth.LoginMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.ProfileMapper;
@@ -10,6 +11,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -23,12 +25,14 @@ public class UserController {
     private final RegisterMapper registerMapper;
     private final LoginMapper loginMapper;
     private final ProfileMapper profileMapper;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserServiceImpl userServiceImpl, RegisterMapper registerMapper, LoginMapper loginMapper, ProfileMapper profileMapper){
+    public UserController(UserServiceImpl userServiceImpl, RegisterMapper registerMapper, LoginMapper loginMapper, ProfileMapper profileMapper,JwtUtil jwtUtil){
         this.userServiceImpl=userServiceImpl;
         this.registerMapper=registerMapper;
         this.loginMapper=loginMapper;
         this.profileMapper=profileMapper;
+        this.jwtUtil=jwtUtil;
     }
 
     @Transactional
@@ -48,11 +52,13 @@ public class UserController {
     public ResponseEntity<Map<String,Object>> Login(@RequestBody @Valid LoginVM loginVM){
         User user=loginMapper.toUser(loginVM);
         User us=userServiceImpl.login(user.getEmail(),user.getPassword());
+        String token = jwtUtil.generateToken(us.getEmail());
         ResponseUserVM responseUserVM=loginMapper.toResponseUserVM(us);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User Login successfully");
         response.put("data", responseUserVM);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        response.put("token", token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Transactional
@@ -78,6 +84,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
     @GetMapping("/Search")
     public ResponseEntity<Map<String,Object>> Search(@RequestParam String param){
         List<User> listUser= userServiceImpl.searchUser(param);

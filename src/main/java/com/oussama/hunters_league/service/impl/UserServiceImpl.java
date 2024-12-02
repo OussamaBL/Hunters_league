@@ -10,6 +10,8 @@ import com.oussama.hunters_league.service.UserService;
 import com.oussama.hunters_league.utils.PasswordEncoderUtil;
 import com.oussama.hunters_league.web.vm.user.SearchDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private UserRepositoryImpl userRepositoryImpl;
     @Autowired
     private PasswordEncoderUtil passwordEncoderUtil;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public Optional<User> findByUsernameOrEmailOrCin(String username, String email, String cin) {
@@ -45,6 +49,11 @@ public class UserServiceImpl implements UserService {
         us.orElseThrow(() -> new UserNotFoundException("Email not found"));
         if(!passwordEncoderUtil.matches(password,us.get().getPassword()))
             throw new UserNotFoundException("Password incorrect");
+       /* authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        email,password
+                )
+        );*/
         return us.get();
     }
 
