@@ -7,6 +7,7 @@ import com.oussama.hunters_league.web.vm.user.*;
 import com.oussama.hunters_league.web.vm.mapper.auth.LoginMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.ProfileMapper;
 import com.oussama.hunters_league.web.vm.mapper.auth.RegisterMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -40,10 +41,12 @@ public class UserController {
     public ResponseEntity<Map<String,Object>> Register(@RequestBody @Valid RegisterVM userVM){
         User user=registerMapper.toUser(userVM);
         User us=userServiceImpl.addUser(user);
+        String token = jwtUtil.generateToken(us.getEmail());
         ResponseUserVM responseUserVM=registerMapper.toResponseUserVM(us);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User added successfully");
         response.put("data", responseUserVM);
+        response.put("token", token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -61,8 +64,21 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+/*    @PostMapping("/Logout")
+    public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Token is missing or invalid");
+        }
+        String token = authHeader.substring(7);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "User logged out successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }*/
+
     @Transactional
     @PutMapping("/Profile/{id}")
+    @PreAuthorize("authentication.principal.id == #id")
     public ResponseEntity<Map<String,Object>> Profile(@RequestBody @Valid ProfileVM profileVM, @PathVariable UUID id){
         User user=profileMapper.toUser(profileVM);
         user.setId(id);
@@ -77,6 +93,7 @@ public class UserController {
 
     @Transactional
     @DeleteMapping("/Delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String,Object>> Delete(@PathVariable UUID id){
         userServiceImpl.deleteUser(id);
         Map<String, Object> response = new HashMap<>();
@@ -84,7 +101,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/Search")
     public ResponseEntity<Map<String,Object>> Search(@RequestParam String param){
         List<User> listUser= userServiceImpl.searchUser(param);
@@ -95,6 +112,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/findByCriteria")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ResponseUserVM>> findByCriteria(@RequestBody @Valid SearchDTO searchDTO){
         List<User> listUser=userServiceImpl.findByCriteria(searchDTO);
         List<ResponseUserVM> responseUserVMList=listUser.stream().map((user)->registerMapper.toResponseUserVM(user)).collect(Collectors.toList());

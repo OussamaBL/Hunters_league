@@ -1,6 +1,7 @@
 package com.oussama.hunters_league.domain;
 
 
+import com.oussama.hunters_league.domain.Enum.Authority;
 import com.oussama.hunters_league.domain.Enum.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,11 @@ public class User implements UserDetails {
     @Override
     public Collection<SimpleGrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Transient
+    public Set<Authority> getAuthoritiesRole() {
+        return role.getAuthorities();
     }
 
     @Override

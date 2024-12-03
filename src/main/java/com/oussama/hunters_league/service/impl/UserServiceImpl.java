@@ -49,11 +49,6 @@ public class UserServiceImpl implements UserService {
         us.orElseThrow(() -> new UserNotFoundException("Email not found"));
         if(!passwordEncoderUtil.matches(password,us.get().getPassword()))
             throw new UserNotFoundException("Password incorrect");
-       /* authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        email,password
-                )
-        );*/
         return us.get();
     }
 
