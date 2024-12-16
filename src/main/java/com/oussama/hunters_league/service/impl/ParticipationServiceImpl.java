@@ -66,6 +66,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     public List<ParticipationResulVM> getUserCompetitionResults(UUID id) {
+
         if(!userRepository.existsById(id)) throw new UserNotFoundException("user not exist");
         List<Participation> participationList=participationRepository.findAllByUser_Id(id);
         return participationList.stream()

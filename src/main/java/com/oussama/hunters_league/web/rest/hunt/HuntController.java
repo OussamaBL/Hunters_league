@@ -8,6 +8,7 @@ import com.oussama.hunters_league.web.vm.mapper.hunt.AddHuntMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,9 @@ public class HuntController {
         this.addHuntMapper=addHuntMapper;
         this.huntServiceImpl=huntServiceImpl;
     }
+
     @PostMapping("/addHunt")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('JURY')")
     public ResponseEntity<Map<String,Object>> addHunt(@RequestBody @Valid AddHuntVM addHuntVM){
         Hunt hunt1=huntServiceImpl.addHunt(addHuntVM);
         ResponseHuntVM responseHuntVM=addHuntMapper.toResponseHuntVM(hunt1);
