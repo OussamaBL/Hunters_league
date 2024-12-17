@@ -18,6 +18,12 @@ spring:
       enabled: true
       lifecycle-management: start_only
 
-
 server:
-  port: 8081
+  port: 8443
+  ssl:
+    enabled: true
+    key-alias: spring-https
+    key-store: classpath:java.p12
+    key-store-password: password
+    key-store-type: PKCS12
+    key-password: password
