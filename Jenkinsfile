@@ -1,69 +1,52 @@
 pipeline {
     agent any
 
-    tools{
-        jdk 'jdk17'
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarQube Scanner' // Jenkins SonarQube scanner tool name
     }
 
     stages {
-        stage('Code Checkout') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/OussamaBL/Hunters_league.git'
+                checkout scm
             }
         }
 
-        stage('OWASP Dependency Check'){
-            steps{
-                dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'db-check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
-
-        stage('Sonarqube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                sh ''' mvn sonar:sonar \
-                    -Dsonar.host.url=http://localhost:9000/ \
-                    -Dsonar.login=sqb_03a91c877bb3c79737efeb7fbb224426b2812db7 '''
-            }
-        }
-
-        stage('Clean & Package'){
-            steps{
-                sh "mvn clean package -DskipTests"
-            }
-        }
-
-
-
-      /*  stage("Docker Build & Push"){
-            steps{
-                script{
-                    withDockerRegistry(credentialsId: 'DockerHub-Token', toolName: 'docker') {
-                        def imageName = "spring-boot-prof-management"
-                        def buildTag = "${imageName}:${BUILD_NUMBER}"
-                        def latestTag = "${imageName}:latest"  // Define latest tag
-
-                        sh "docker build -t ${imageName} -f Dockerfile.final ."
-                        sh "docker tag ${imageName} abdeod/${buildTag}"
-                        sh "docker tag ${imageName} abdeod/${latestTag}"  // Tag with latest
-                        sh "docker push abdeod/${buildTag}"
-                        sh "docker push abdeod/${latestTag}"  // Push latest tag
-                        env.BUILD_TAG = buildTag
-                    }
-
+                withSonarQubeEnv('SonarQube') { // Replace with your SonarQube server name in Jenkins
+                    sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                        -Dsonar.projectKey=Hunters_league \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=sqp_ce0075a8e4c90d2b735a543a266fbcc21ef6aca4 \
+                        -Dsonar.qualitygate.wait=true"
                 }
             }
-        } */
+        }
 
-      /*   stage('Vulnerability scanning'){
-            steps{
-                sh " trivy image abdeod/${buildTag}"
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        def qualityGate = waitForQualityGate()
+                        if (qualityGate.status != 'OK') {
+                            error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
+                        }
+                    }
+                }
             }
-        } */
+        }
 
-        stage("Staging"){
-            steps{
-                sh 'docker-compose up -d'
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t your_app_image:latest .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 8080:8080 your_app_image:latest'
             }
         }
     }
