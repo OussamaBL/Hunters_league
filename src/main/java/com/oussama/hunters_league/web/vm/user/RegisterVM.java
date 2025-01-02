@@ -52,6 +52,6 @@ public class RegisterVM {
     private LocalDateTime licenseExpirationDate;
 
     @NotNull(message = "Role is required")
-    private Role role;
+    private Role role=Role.MEMBER;
 
 }

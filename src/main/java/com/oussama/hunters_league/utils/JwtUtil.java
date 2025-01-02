@@ -3,6 +3,8 @@ package com.oussama.hunters_league.utils;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +19,12 @@ public class JwtUtil {
     private static final long EXPIRATION_TIME = 86400000;
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    public String generateToken(String email) {
+    public String generateToken(String email,String username,String role) {
+        HashedMap<String,String> infos = new HashedMap<>();
+        infos.put("username", username);
+        infos.put("role",role);
         return Jwts.builder()
+                .setClaims(infos)
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
