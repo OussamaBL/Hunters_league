@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<Map<String,Object>> Register(@RequestBody @Valid RegisterVM userVM){
         User user=registerMapper.toUser(userVM);
         User us=userServiceImpl.addUser(user);
-        String token = jwtUtil.generateToken(us.getEmail());
+        String token = jwtUtil.generateToken(us.getEmail(),us.getUsername(),us.getRole().name());
         ResponseUserVM responseUserVM=registerMapper.toResponseUserVM(us);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User added successfully");
@@ -55,7 +55,7 @@ public class UserController {
     public ResponseEntity<Map<String,Object>> Login(@RequestBody @Valid LoginVM loginVM){
         User user=loginMapper.toUser(loginVM);
         User us=userServiceImpl.login(user.getEmail(),user.getPassword());
-        String token = jwtUtil.generateToken(us.getEmail());
+        String token = jwtUtil.generateToken(us.getEmail(),us.getUsername(),us.getRole().name());
         ResponseUserVM responseUserVM=loginMapper.toResponseUserVM(us);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User Login successfully");
